@@ -7,7 +7,7 @@ import setupCoinbaseWallet from './utils/bundle';
 import Web3 from 'web3';
 
 
-const WalletContext = React.createContext();
+export const WalletContext = React.createContext();
 
 const useWallet = () => React.useContext(WalletContext);
 
@@ -228,3 +228,4 @@ const WalletProvider = React.memo(({ children }) => {
 
 
 module.exports = useWallet
+module.exports = WalletProvider

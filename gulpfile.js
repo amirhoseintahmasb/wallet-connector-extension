@@ -40,7 +40,7 @@ gulp.task('build', function () {
 
 gulp.task('connect', function (done) {
   connect.server({
-    name: 'wallet-sdk',
+    name: 'wallet-connector-extention',
     root: config.root,
     port: config.port,
     livereload: true

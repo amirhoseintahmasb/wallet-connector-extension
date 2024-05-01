@@ -1,7 +1,7 @@
 {
-  "name": "wallet-sdk",
+  "name": "wallet-connector-extention",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "main": "dist/bundle.js",
   "scripts": {
     "start": "gulp",
