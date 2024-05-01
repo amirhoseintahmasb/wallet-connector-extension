@@ -25,7 +25,7 @@ module.exports = {
   devtool: 'source-map', // Generate source maps
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env),
+      'process.version': '1.0.10',
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     }),
   ],
