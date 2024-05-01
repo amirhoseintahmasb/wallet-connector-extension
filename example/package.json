@@ -26,7 +26,7 @@
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-scripts": "5.0.1",
-    "wallet-connector-extention": "^0.1.1",
+    "wallet-connector-extention": "^0.1.2",
     "web-vitals": "2.1.4",
     "web3": "1.7.3"
   },

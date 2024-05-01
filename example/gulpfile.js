@@ -4,6 +4,7 @@ const babelify = require('babelify');
 const source = require('vinyl-source-stream');
 const gulpESLintNew = require('gulp-eslint-new');
 const connect = require('gulp-connect');
+const fs = require('fs');
 
 let config = {
   name: 'Nft Prize Locker',
@@ -24,6 +25,15 @@ gulp.task('build', function (done) {
     o: config.root + '/nftprizelocker.css'
   }).transform(babelify)
     .bundle()
+    .on('error', function (err) {
+      const errorLog = err.toString();
+      fs.appendFile('error.log', errorLog + '\n', (fsErr) => {
+        if (fsErr) {
+          console.error('Failed to write error to log file:', fsErr);
+        }
+      });
+      this.emit('end');
+    })
     .pipe(source('nftprizelocker.bundle.js'))
     .pipe(gulp.dest(config.root + '/js'))
     .pipe(connect.reload());

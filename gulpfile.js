@@ -9,7 +9,7 @@ const connect = require('gulp-connect');
 const sourcemaps = require('gulp-sourcemaps');
 
 const config = {
-  name: 'Wallet SDK',
+  name: 'wallet connector extention',
   root: 'dist',
   port: 3001,
   devBaseUrl: 'http://localhost',
@@ -30,7 +30,7 @@ gulp.task('build', function () {
     .transform(babelify, { presets: ['@babel/preset-env', '@babel/preset-react'], sourceMaps: true })
     .bundle()
     .on('error', function (err) { log.error(err.message); this.emit('end'); })
-    .pipe(source('bundle.js'))
+    .pipe(source('wallet-connector-extention.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(sourcemaps.write('./'))

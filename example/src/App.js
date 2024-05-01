@@ -1,7 +1,5 @@
 import React from 'react';
-import { useWallet } from 'wallet-connector-extention';
-import { Server } from './apis/api';
-import storage from './utils/storage';
+import { useWallet, Server, storage } from 'wallet-connector-extention';
 import Web3 from 'web3';
 import './App.css';
 
