@@ -226,6 +226,7 @@ const WalletProvider = React.memo(({ children }) => {
     )
 });
 
-
-module.exports = useWallet
-module.exports = WalletProvider
+module.exports = {
+    useWallet,
+    WalletProvider
+};
