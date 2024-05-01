@@ -7,7 +7,6 @@ import storage from './utils/storage';
 import setupCoinbaseWallet from './utils/bundle';
 import Web3 from 'web3';
 
-
 export const WalletContext = React.createContext();
 
 const useWallet = () => React.useContext(WalletContext);
