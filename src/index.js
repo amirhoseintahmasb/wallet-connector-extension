@@ -1,10 +1,9 @@
 import React from 'react';
 import createMetaMaskProvider from 'metamask-extension-provider';
 import { getNormalizeAddress } from './utils';
-import { EthereumEvents } from './utils/events';
 import { Server } from './apis/api';
 import storage from './utils/storage';
-import setupCoinbaseWallet from './utils/bundle';
+import setupCoinbaseWallet from './utils/coinbase';
 import Web3 from 'web3';
 
 export const WalletContext = React.createContext();
