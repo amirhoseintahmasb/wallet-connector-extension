@@ -21,9 +21,7 @@ gulp.task('build', function () {
     .bundle()
     .on('error', function (err) { log.error(err.message); this.emit('end'); })
     .pipe(source('wallet-connector-extention.js'))
-    .pipe(buffer())
-    .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(gulp.dest(config.root))
+    .pipe(gulp.dest(config.root + '/js'))
     .pipe(connect.reload());
 });
 
