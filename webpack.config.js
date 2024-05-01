@@ -1,11 +1,12 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+require('dotenv').config();
 
 module.exports = {
   entry: './src/index.js', // Entry point for your application
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'wallet-connector-extention.js' // Output file
+    filename: 'index.js' // Output file
   },
   module: {
     rules: [
@@ -23,10 +24,9 @@ module.exports = {
   },
   devtool: 'source-map', // Generate source maps
   plugins: [
-    // new HtmlWebpackPlugin({
-    //   title: 'Wallet Connector Extension', // Generates an HTML file with this title
-    //   filename: 'index.html' // Output HTML file
-    // })
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env)  // Pass environment variables to your application
+    }),
   ],
   devServer: {
     contentBase: './dist',
