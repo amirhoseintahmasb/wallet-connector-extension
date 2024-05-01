@@ -10,7 +10,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/, // Apply babel-loader to JavaScript files
+        test: /\.js$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -21,16 +21,14 @@ module.exports = {
       }
     ]
   },
-  devtool: 'source-map',
   plugins: [
     new webpack.ProvidePlugin({
       process: 'process/browser',
     }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    })
   ],
-  devServer: {
-    contentBase: './dist',
-    hot: true // Enable hot module replacement
-  },
   resolve: {
     fallback: {
       "stream": require.resolve("stream-browserify"),
@@ -38,8 +36,9 @@ module.exports = {
       "http": require.resolve("stream-http"),
       "https": require.resolve("https-browserify"),
       "os": require.resolve("os-browserify/browser"),
-      "vm": require.resolve("vm-browserify")
+      "vm": require.resolve("vm-browserify"),
+      "buffer": require.resolve("buffer/") 
     }
   },
-  
+
 };

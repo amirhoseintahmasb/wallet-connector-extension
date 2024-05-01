@@ -5,6 +5,9 @@ import { Server } from './apis/api';
 import storage from './utils/storage';
 import setupCoinbaseWallet from './utils/coinbase';
 import Web3 from 'web3';
+import { Buffer } from 'buffer';
+
+window.Buffer = Buffer;
 
 if (typeof process === 'undefined') {
     const process = require('process');

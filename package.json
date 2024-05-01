@@ -1,14 +1,14 @@
 {
   "name": "wallet-connector-extention",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "private": false,
   "main": "dist/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
-    "start": "gulp",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "browserify": "browserify ./dist/index.js -t [ babelify --presets [@babel/preset-react] ] -o ./dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.7.2",
+    "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "dotenv": "^16.4.5",
     "https-browserify": "^1.0.0",
