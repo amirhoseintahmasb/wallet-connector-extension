@@ -6,6 +6,11 @@ import storage from './utils/storage';
 import setupCoinbaseWallet from './utils/coinbase';
 import Web3 from 'web3';
 
+if (typeof process === 'undefined') {
+    const process = require('process');
+    window.process = process;
+}
+
 export const WalletContext = React.createContext();
 
 const useWallet = () => React.useContext(WalletContext);
@@ -196,7 +201,7 @@ const WalletProvider = React.memo(({ children }) => {
     const metamaskHandleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
             console.log("[account changes]: ", getNormalizeAddress(accounts))
-        } 
+        }
     }
 
     return (

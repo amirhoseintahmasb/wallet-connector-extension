@@ -1,12 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
-require('dotenv').config();
 
 module.exports = {
-  entry: './src/index.js', // Entry point for your application
+  entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js' // Output file
+    filename: 'index.js'
   },
   module: {
     rules: [
@@ -22,11 +21,10 @@ module.exports = {
       }
     ]
   },
-  devtool: 'source-map', // Generate source maps
+  devtool: 'source-map',
   plugins: [
-    new webpack.DefinePlugin({
-      'process.version': '1.0.10',
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
     }),
   ],
   devServer: {
