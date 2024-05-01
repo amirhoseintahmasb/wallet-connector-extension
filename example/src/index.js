@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import WalletProvider from './context/WalletProvider';
+import { WalletProvider } from 'wallet-connector-extention';
 import App from './App';
 import './index.css';
 
