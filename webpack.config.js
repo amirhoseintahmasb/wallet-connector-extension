@@ -24,8 +24,6 @@ module.exports = {
   plugins: [
     new webpack.ProvidePlugin({
       process: 'process/browser',
-    }),
-    new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
     })
   ],
@@ -37,7 +35,8 @@ module.exports = {
       "https": require.resolve("https-browserify"),
       "os": require.resolve("os-browserify/browser"),
       "vm": require.resolve("vm-browserify"),
-      "buffer": require.resolve("buffer/") 
+      "buffer": require.resolve("buffer/"),
+      "process": require.resolve("process/browser")
     }
   },
 

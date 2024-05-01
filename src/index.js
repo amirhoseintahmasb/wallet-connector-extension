@@ -14,11 +14,11 @@ if (typeof process === 'undefined') {
     window.process = process;
 }
 
-export const WalletContext = React.createContext();
+const WalletContext = React.createContext();
 
 const useWallet = () => React.useContext(WalletContext);
 
-export function withWallet(Component) {
+function withWallet(Component) {
     const WalletComponent = props => (
         <WalletContext.Consumer>
             {contexts => <Component {...props} {...contexts} />}
@@ -233,7 +233,7 @@ const WalletProvider = React.memo(({ children }) => {
     )
 });
 
-module.exports = {
+export {
     useWallet,
     WalletProvider,
     Server,
