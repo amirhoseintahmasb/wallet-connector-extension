@@ -5,7 +5,10 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js'
+    filename: 'index.js',
+    library: 'WalletConnectorExtension',  // Global variable when included via script tag
+    libraryTarget: 'umd',  // Compatibility with CommonJS, AMD and as a global variable
+    globalObject: 'this'  // Ensures compatibility with both browsers and Node.js
   },
   module: {
     rules: [
