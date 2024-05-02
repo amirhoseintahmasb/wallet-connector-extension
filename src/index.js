@@ -13,14 +13,15 @@ if (typeof process === 'undefined') {
 }
 export const createWalletManager = () => {
     const coinbaseProvider = setupCoinbaseWallet();
-    const metamaskProvider = getMetamaskProvider();
+    // const metamaskProvider = getMetamaskProvider();
 
     const getMetamaskProvider = async () => {
         if (window.ethereum) {
             console.log('found window.ethereum>>');
             return window.ethereum;
         } else {
-            const provider = createMetaMaskProvider();
+            console.log("metamask not founddddddddddddddd")
+            // const provider = createMetaMaskProvider();
             return provider;
         }
     }
