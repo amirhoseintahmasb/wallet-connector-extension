@@ -5,12 +5,12 @@ import setupCoinbaseWallet from './utils/coinbase';
 import Web3 from 'web3';
 import { Buffer } from 'buffer';
 
-// window.Buffer = Buffer;
+window.Buffer = Buffer;
 
-// if (typeof process === 'undefined') {
-//     const process = require('process');
-//     window.process = process;
-// }
+if (typeof process === 'undefined') {
+    const process = require('process');
+    window.process = process;
+}
 
 export class WalletManager {
     constructor() {
@@ -30,38 +30,6 @@ export class WalletManager {
         this.metamaskProvider = await this.getMetamaskProvider();
     }
 
-    async CoinbaseConnect() {
-        try {
-            const accounts = await this.coinbaseProvider.request({ method: 'eth_requestAccounts' });
-            if (!accounts || accounts.length <= 0) {
-                throw new Error("wallet address not selected");
-            }
-
-            const web3 = new Web3(this.coinbaseProvider);
-            const chainId = await web3.eth.getChainId();
-            this.coinbaseChainId = chainId;
-            console.log("coinbase's chainId : ", chainId);
-
-            const normalizedAddress = getNormalizeAddress(accounts[0]);
-            console.log("User's address : ", normalizedAddress);
-            return normalizedAddress;
-        } catch (error) {
-            console.error("error while connect", error);
-            throw error;
-        }
-    }
-
-    // Additional methods for personal sign, disconnect, etc.
-
-    async getMetamaskProvider() {
-        if (window.ethereum) {
-            console.log('found window.ethereum');
-            return window.ethereum;
-        } else {
-            return createMetaMaskProvider();
-        }
-    }
-
     // COINBASE functionality
     async CoinbaseConnect() {
         try {
@@ -74,7 +42,7 @@ export class WalletManager {
             const chainId = await web3.eth.getChainId();
             console.log("coinbase's chainId : ", chainId)
 
-            setCoinbaseChainId(chainId)
+            this.coinbaseChainId = chainId
 
             console.log("User's address : ", accounts)
             const account = getNormalizeAddress(accounts);
@@ -119,7 +87,7 @@ export class WalletManager {
             const [accounts, chainId] = await getMetamaskAccounts(metamaskProvider);
             if (accounts && accounts.length > 0 && chainId) {
                 const account = getNormalizeAddress(accounts);
-                setMetamaskChainId(chainId);
+                this.metamaskChainId = chainId;
                 storage.set('connected', { connected: true, wallet: 'metamask' });
                 // metamaskSubscribeToEvents(metamaskProvider)
                 return account
@@ -210,7 +178,7 @@ export class WalletManager {
     }
 
     async metamaskHandleChainChanged(chainId) {
-        setMetamaskChainId(chainId);
+        this.metamaskChainId = chainId;
     }
 
     async metamaskHandleAccountsChanged(accounts) {
