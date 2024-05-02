@@ -31,31 +31,6 @@ class WalletManager {
         const metaProvider = this.getMetamaskProvider()
         this.metamaskProvider = metaProvider
 
-
-        // COINBASE functionality
-        this.CoinbaseConnect = async () => {
-            try {
-                const accounts = await coinbaseProvider.request({ method: 'eth_requestAccounts' })
-                if (!accounts || accounts.length <= 0) {
-                    throw new Error("wallet address not selected")
-                }
-
-                const web3 = new Web3(coinbaseProvider);
-                const chainId = await web3.eth.getChainId();
-                console.log("coinbase's chainId : ", chainId)
-
-                this.coinbaseChainId = chainId
-
-                console.log("User's address : ", accounts)
-                const account = getNormalizeAddress(accounts);
-                console.log("User's address : ", account)
-                storage.set('connected', { connected: true, wallet: 'coinbase' });
-                return account
-            } catch (e) {
-                console.log("error while connect", e);
-            }
-        }
-
         this.getMetamaskProvider = async () => {
             if (window.ethereum) {
                 console.log('found window.ethereum>>');
@@ -199,6 +174,31 @@ class WalletManager {
 
 }
 
+const coinbaseProvider = setupCoinbaseWallet()
+
 export function createWalletManager() {
-    return new WalletManager();
+
+    // COINBASE functionality
+    coinbaseConnect = async () => {
+        try {
+            const accounts = await coinbaseProvider.request({ method: 'eth_requestAccounts' })
+            if (!accounts || accounts.length <= 0) {
+                throw new Error("wallet address not selected")
+            }
+            console.log("User's address : ", accounts)
+
+            const web3 = new Web3(coinbaseProvider);
+            const chainId = await web3.eth.getChainId();
+            console.log("coinbase's chainId : ", chainId)
+
+
+            const account = getNormalizeAddress(accounts);
+            console.log("User's address : ", account)
+            storage.set('connected', { connected: true, wallet: 'coinbase' });
+            return {account,chainId}
+        } catch (e) {
+            console.log("error while connect", e);
+        }
+    }
+
 }
