@@ -1,57 +1,69 @@
-import React from 'react';
 import createMetaMaskProvider from 'metamask-extension-provider';
 import { getNormalizeAddress } from './utils';
-import { Server } from './apis/api';
 import storage from './utils/storage';
 import setupCoinbaseWallet from './utils/coinbase';
 import Web3 from 'web3';
 import { Buffer } from 'buffer';
 
-window.Buffer = Buffer;
+// window.Buffer = Buffer;
 
-if (typeof process === 'undefined') {
-    const process = require('process');
-    window.process = process;
-}
+// if (typeof process === 'undefined') {
+//     const process = require('process');
+//     window.process = process;
+// }
 
-const WalletContext = React.createContext();
+export class WalletManager {
+    constructor() {
+        this.coinbaseProvider = null;
+        this.metamaskProvider = null;
+        this.coinbaseChainId = null;
+        this.metamaskChainId = null;
 
-const useWallet = () => React.useContext(WalletContext);
-
-function withWallet(Component) {
-    const WalletComponent = props => (
-        <WalletContext.Consumer>
-            {contexts => <Component {...props} {...contexts} />}
-        </WalletContext.Consumer>
-    );
-    return WalletComponent;
-}
-
-const WalletProvider = React.memo(({ children }) => {
-    const [coinbaseChainId, setCoinbaseChainId] = React.useState(null);
-    const [coinbaseProvider, setCoinbaseProvider] = React.useState(null);
-
-    const [metamaskChainId, setMetamaskChainId] = React.useState(null);
-    const [metamaskProvider, setMetamaskProvider] = React.useState(null);
-
-
-    React.useEffect(() => {
         const cbProvider = setupCoinbaseWallet()
-        setCoinbaseProvider(cbProvider);
-
+        this.coinbaseProvider = cbProvider
         const metaProvider = getMetamaskProvider()
-        setMetamaskProvider(metaProvider);
+        this.metamaskProvider = metaProvider
+    }
 
-        return () => {
-            // connectEagerly();
-            // metamaskUnsubscribeToEvents();
-            // ethereum.disconnect();
-        };
-    }, []);
+    async init() {
+        this.coinbaseProvider = await setupCoinbaseWallet();
+        this.metamaskProvider = await this.getMetamaskProvider();
+    }
 
+    async CoinbaseConnect() {
+        try {
+            const accounts = await this.coinbaseProvider.request({ method: 'eth_requestAccounts' });
+            if (!accounts || accounts.length <= 0) {
+                throw new Error("wallet address not selected");
+            }
+
+            const web3 = new Web3(this.coinbaseProvider);
+            const chainId = await web3.eth.getChainId();
+            this.coinbaseChainId = chainId;
+            console.log("coinbase's chainId : ", chainId);
+
+            const normalizedAddress = getNormalizeAddress(accounts[0]);
+            console.log("User's address : ", normalizedAddress);
+            return normalizedAddress;
+        } catch (error) {
+            console.error("error while connect", error);
+            throw error;
+        }
+    }
+
+    // Additional methods for personal sign, disconnect, etc.
+
+    async getMetamaskProvider() {
+        if (window.ethereum) {
+            console.log('found window.ethereum');
+            return window.ethereum;
+        } else {
+            return createMetaMaskProvider();
+        }
+    }
 
     // COINBASE functionality
-    const CoinbaseConnect = async () => {
+    async CoinbaseConnect() {
         try {
             const accounts = await coinbaseProvider.request({ method: 'eth_requestAccounts' })
             if (!accounts || accounts.length <= 0) {
@@ -74,7 +86,7 @@ const WalletProvider = React.memo(({ children }) => {
         }
     }
 
-    const CoinbasePersonalSign = async (messageHash, checkSumAddress) => {
+    async CoinbasePersonalSign(messageHash, checkSumAddress) {
         try {
             const signature = await coinbaseProvider.request({
                 method: 'personal_sign',
@@ -87,21 +99,21 @@ const WalletProvider = React.memo(({ children }) => {
         }
     }
 
-    const CoinbaseDisconnect = async () => {
+    async CoinbaseDisconnect() {
 
     }
 
-    const CoinbasePayment = async () => {
+    async CoinbasePayment() {
 
     }
 
-    const CoinbaseContractCall = async () => {
+    async CoinbaseContractCall() {
 
     }
 
 
     // METAMASK functionality
-    const MetamaskConnect = async () => {
+    async MetamaskConnect() {
         console.log("connectWallet runs....")
         try {
             const [accounts, chainId] = await getMetamaskAccounts(metamaskProvider);
@@ -117,7 +129,7 @@ const WalletProvider = React.memo(({ children }) => {
         }
     }
 
-    const MetamaskPersonalSign = async (messageHash, checkSumAddress) => {
+    async MetamaskPersonalSign(messageHash, checkSumAddress) {
         try {
             const signature = await metamaskProvider.request({
                 method: 'personal_sign',
@@ -132,7 +144,7 @@ const WalletProvider = React.memo(({ children }) => {
     };
 
 
-    const MetamaskDisconnect = async () => {
+    async MetamaskDisconnect() {
         try {
             console.log("disconnectWallet runs")
         } catch (e) {
@@ -140,16 +152,16 @@ const WalletProvider = React.memo(({ children }) => {
         }
     }
 
-    const MetamaskPayment = async () => {
+    async MetamaskPayment() {
 
     }
 
 
-    const MetamaskContractCall = async () => {
+    async MetamaskContractCall() {
 
     }
 
-    const getMetamaskProvider = () => {
+    async getMetamaskProvider() {
         if (window.ethereum) {
             console.log('found window.ethereum>>');
             return window.ethereum;
@@ -159,7 +171,7 @@ const WalletProvider = React.memo(({ children }) => {
         }
     }
 
-    const getMetamaskAccounts = async () => {
+    async getMetamaskAccounts() {
         if (metamaskProvider) {
             const [accounts, chainId] = await Promise.all([
                 metamaskProvider.request({
@@ -172,7 +184,7 @@ const WalletProvider = React.memo(({ children }) => {
         return false;
     }
 
-    const metamaskSubscribeToEvents = () => {
+    async metamaskSubscribeToEvents() {
         if (metamaskProvider) {
             // metamaskProvider.on(EthereumEvents.CHAIN_CHANGED, handleChainChanged);
             // metamaskProvider.on(EthereumEvents.ACCOUNTS_CHANGED, handleAccountsChanged);
@@ -181,7 +193,7 @@ const WalletProvider = React.memo(({ children }) => {
         }
     }
 
-    const metamaskUnsubscribeToEvents = () => {
+    async metamaskUnsubscribeToEvents() {
         if (metamaskProvider) {
             // metamaskProvider.removeListener(EthereumEvents.CHAIN_CHANGED, handleChainChanged);
             // metamaskProvider.removeListener(EthereumEvents.ACCOUNTS_CHANGED, handleAccountsChanged);
@@ -190,52 +202,21 @@ const WalletProvider = React.memo(({ children }) => {
         }
     }
 
-    const connectEagerly = async () => {
+    async connectEagerly() {
         const metamask = await storage.get('connected');
         if (metamask?.connected) {
             await MetamaskConnect();
         }
     }
 
-    const metamaskHandleChainChanged = (chainId) => {
+    async metamaskHandleChainChanged(chainId) {
         setMetamaskChainId(chainId);
     }
 
-    const metamaskHandleAccountsChanged = (accounts) => {
+    async metamaskHandleAccountsChanged(accounts) {
         if (accounts.length > 0) {
             console.log("[account changes]: ", getNormalizeAddress(accounts))
         }
     }
 
-    return (
-        <WalletContext.Provider
-            value={{
-                // coinbase 
-                coinbaseChainId,
-                coinbaseProvider,
-                CoinbaseConnect,
-                CoinbasePersonalSign,
-                CoinbaseDisconnect,
-                CoinbasePayment,
-                CoinbaseContractCall,
-                // metamask 
-                metamaskChainId,
-                metamaskProvider,
-                MetamaskConnect,
-                MetamaskPersonalSign,
-                MetamaskDisconnect,
-                MetamaskPayment,
-                MetamaskContractCall
-            }}
-        >
-            {children}
-        </WalletContext.Provider>
-    )
-});
-
-export {
-    useWallet,
-    WalletProvider,
-    Server,
-    storage
-};
+}
