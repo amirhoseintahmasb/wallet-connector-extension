@@ -14,6 +14,7 @@ if (typeof process === 'undefined') {
 export const createWalletManager = () => {
     const coinbaseProvider = setupCoinbaseWallet();
     // const metamaskProvider = getMetamaskProvider();
+    let metamaskProvider
 
     const getMetamaskProvider = async () => {
         if (window.ethereum) {
@@ -22,6 +23,7 @@ export const createWalletManager = () => {
         } else {
             console.log("not found window.ethereum>>")
             const provider = createMetaMaskProvider();
+            metamaskProvider=provider
             return provider;
         }
     }
@@ -48,8 +50,11 @@ export const createWalletManager = () => {
         }
     };
 
-    const coinbasePersonalSign = async (messageHash, checkSumAddress) => {
+    const coinbasePersonalSign = async (message, account) => {
         try {
+            const checkSumAddress = Web3.utils.toChecksumAddress(account)
+            const messageHash = Web3.utils.utf8ToHex(message)
+
             const signature = await coinbaseProvider.request({
                 method: 'personal_sign',
                 params: [messageHash, checkSumAddress]
@@ -88,8 +93,11 @@ export const createWalletManager = () => {
         }
     }
 
-    const metamaskPersonalSign = async (messageHash, checkSumAddress) => {
+    const metamaskPersonalSign = async (message, account) => {
         try {
+            const checkSumAddress = Web3.utils.toChecksumAddress(account)
+            const messageHash = Web3.utils.utf8ToHex(message)
+
             const signature = await metamaskProvider.request({
                 method: 'personal_sign',
                 params: [messageHash, checkSumAddress]
@@ -119,6 +127,7 @@ export const createWalletManager = () => {
     }
 
     const getMetamaskAccounts = async () => {
+        console.log("metamask provider =====> ",metamaskProvider)
         if (metamaskProvider) {
             const [accounts, chainId] = await Promise.all([
                 metamaskProvider.request({
@@ -128,7 +137,6 @@ export const createWalletManager = () => {
             ]);
             return [accounts, chainId];
         }
-        return false;
     }
 
     const metamaskSubscribeToEvents = () => {
