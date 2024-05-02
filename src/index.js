@@ -1,4 +1,4 @@
-import createMetaMaskProvider from 'metamask-extension-provider';
+import { createMetaMaskProvider } from './utils/metamask';
 import { getNormalizeAddress } from './utils';
 import storage from './utils/storage';
 import setupCoinbaseWallet from './utils/coinbase';
@@ -13,15 +13,15 @@ if (typeof process === 'undefined') {
 }
 export const createWalletManager = () => {
     const coinbaseProvider = setupCoinbaseWallet();
-    // const metamaskProvider = getMetamaskProvider();
+    const metamaskProvider = getMetamaskProvider();
 
     const getMetamaskProvider = async () => {
         if (window.ethereum) {
             console.log('found window.ethereum>>');
             return window.ethereum;
         } else {
-            console.log("metamask not founddddddddddddddd")
-            // const provider = createMetaMaskProvider();
+            console.log("not found window.ethereum>>")
+            const provider = createMetaMaskProvider();
             return provider;
         }
     }
