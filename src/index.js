@@ -174,31 +174,32 @@ class WalletManager {
 
 }
 
-const coinbaseProvider = setupCoinbaseWallet()
+// Assuming setupCoinbaseWallet and other dependencies are imported correctly
 
-export function createWalletManager() {
+export const createWalletManager = () => {
+    const coinbaseProvider = setupCoinbaseWallet();
 
-    // COINBASE functionality
-    coinbaseConnect = async () => {
+    const coinbaseConnect = async () => {
         try {
-            const accounts = await coinbaseProvider.request({ method: 'eth_requestAccounts' })
+            const accounts = await coinbaseProvider.request({ method: 'eth_requestAccounts' });
             if (!accounts || accounts.length <= 0) {
-                throw new Error("wallet address not selected")
+                throw new Error("wallet address not selected");
             }
-            console.log("User's address : ", accounts)
+            console.log("User's address : ", accounts);
 
             const web3 = new Web3(coinbaseProvider);
             const chainId = await web3.eth.getChainId();
-            console.log("coinbase's chainId : ", chainId)
-
+            console.log("coinbase's chainId : ", chainId);
 
             const account = getNormalizeAddress(accounts);
-            console.log("User's address : ", account)
+            console.log("User's address : ", account);
             storage.set('connected', { connected: true, wallet: 'coinbase' });
-            return {account,chainId}
+            return { account, chainId };
         } catch (e) {
             console.log("error while connect", e);
+            throw e;
         }
-    }
+    };
 
-}
+    return { coinbaseConnect };
+};
