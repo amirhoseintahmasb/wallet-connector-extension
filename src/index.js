@@ -13,7 +13,7 @@ if (typeof process === 'undefined') {
 }
 export const createWalletManager = () => {
     const coinbaseProvider = setupCoinbaseWallet();
-    const metamaskProvider = getMetamaskProvider();
+    // const metamaskProvider = getMetamaskProvider();
 
     const getMetamaskProvider = async () => {
         if (window.ethereum) {
