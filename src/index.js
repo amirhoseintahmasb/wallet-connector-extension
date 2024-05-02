@@ -12,7 +12,8 @@ if (typeof process === 'undefined') {
     window.process = process;
 }
 
-export class WalletManager {
+class WalletManager {
+
     constructor() {
         this.coinbaseProvider = null;
         this.metamaskProvider = null;
@@ -188,3 +189,5 @@ export class WalletManager {
     }
 
 }
+
+export const WalletSDK = new WalletManager()
