@@ -13,8 +13,6 @@ if (typeof process === 'undefined') {
 }
 export const createWalletManager = () => {
     const coinbaseProvider = setupCoinbaseWallet();
-    // const metamaskProvider = getMetamaskProvider();
-    let metamaskProvider
 
     const getMetamaskProvider = async () => {
         if (window.ethereum) {
@@ -23,7 +21,6 @@ export const createWalletManager = () => {
         } else {
             console.log("not found window.ethereum>>")
             const provider = createMetaMaskProvider();
-            metamaskProvider=provider
             return provider;
         }
     }
@@ -79,6 +76,7 @@ export const createWalletManager = () => {
     }
 
     const metamaskConnect = async () => {
+        const metamaskProvider = await getMetamaskProvider();
         console.log("connectWallet runs....")
         try {
             const [accounts, chainId] = await getMetamaskAccounts(metamaskProvider);
@@ -94,6 +92,7 @@ export const createWalletManager = () => {
     }
 
     const metamaskPersonalSign = async (message, account) => {
+        const metamaskProvider = await getMetamaskProvider();
         try {
             const checkSumAddress = Web3.utils.toChecksumAddress(account)
             const messageHash = Web3.utils.utf8ToHex(message)
@@ -127,7 +126,8 @@ export const createWalletManager = () => {
     }
 
     const getMetamaskAccounts = async () => {
-        console.log("metamask provider =====> ",metamaskProvider)
+        const metamaskProvider = await getMetamaskProvider();
+        console.log("metamask provider =====> ", metamaskProvider)
         if (metamaskProvider) {
             const [accounts, chainId] = await Promise.all([
                 metamaskProvider.request({
@@ -139,7 +139,8 @@ export const createWalletManager = () => {
         }
     }
 
-    const metamaskSubscribeToEvents = () => {
+    const metamaskSubscribeToEvents = async () => {
+        const metamaskProvider = await getMetamaskProvider();
         if (metamaskProvider) {
             // metamaskProvider.on(EthereumEvents.CHAIN_CHANGED, handleChainChanged);
             // metamaskProvider.on(EthereumEvents.ACCOUNTS_CHANGED, handleAccountsChanged);
@@ -148,7 +149,8 @@ export const createWalletManager = () => {
         }
     }
 
-    const metamaskUnsubscribeToEvents = () => {
+    const metamaskUnsubscribeToEvents = async () => {
+        const metamaskProvider = await getMetamaskProvider();
         if (metamaskProvider) {
             // metamaskProvider.removeListener(EthereumEvents.CHAIN_CHANGED, handleChainChanged);
             // metamaskProvider.removeListener(EthereumEvents.ACCOUNTS_CHANGED, handleAccountsChanged);
@@ -165,7 +167,7 @@ export const createWalletManager = () => {
     }
 
     const metamaskHandleChainChanged = (chainId) => {
-        this.metamaskChainId = chainId;
+        metamaskChainId = chainId;
     }
 
     const metamaskHandleAccountsChanged = (accounts) => {
