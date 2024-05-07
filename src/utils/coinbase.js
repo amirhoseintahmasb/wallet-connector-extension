@@ -5,7 +5,7 @@ const setupCoinbaseWallet = () => {
     appName: "My App",
     appLogoUrl: "https://example.com/logo.png",
     darkMode: false,
-    overrideIsCoinbaseBrowser: true 
+    // overrideIsCoinbaseBrowser: true 
   });
 
   const ethereum = walletLink.makeWeb3Provider("https://alpha-thrumming-pallet.quiknode.pro/ff978f734c7e829a1b5a009de2b8b4c98f9ff878/", 1);
