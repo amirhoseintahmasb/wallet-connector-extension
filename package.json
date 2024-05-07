@@ -1,6 +1,6 @@
 {
   "name": "wallet-connector-extension",
-  "version": "0.1.30",
+  "version": "0.1.31",
   "private": false,
   "main": "dist/index.js",
   "files": [
@@ -29,11 +29,11 @@
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.7.2",
     "@metamask/inpage-provider": "8.0.3",
-    "detect-browser": "3.0.0",
-    "extension-port-stream": "2.0.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
+    "detect-browser": "3.0.0",
     "dotenv": "^16.4.5",
+    "extension-port-stream": "2.0.0",
     "https-browserify": "^1.0.0",
     "os-browserify": "^0.3.0",
     "process": "^0.11.10",
