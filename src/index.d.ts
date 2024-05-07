@@ -1,4 +1,4 @@
-declare module 'wallet-connector-extention' {
+declare module 'wallet-connector-extension' {
     // Specify the types of the exports here. For example:
     export function createWalletManager(): WalletManager;
 
