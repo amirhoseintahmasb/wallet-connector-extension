@@ -64,16 +64,44 @@ export const createWalletManager = () => {
     }
 
     const coinbaseDisconnect = async () => {
+        try {
+            await coinbaseProvider.disconnect();
+            console.log("Disconnected from Coinbase Wallet.");
+            storage.set('connected', { connected: false, wallet: null });
+        } catch (error) {
+            console.error("Error disconnecting Coinbase Wallet:", error);
+            throw error;
+        }
+    };
 
-    }
+    const coinbasePayment = async (amount, receiver) => {
+        const web3 = new Web3(coinbaseProvider);
+        try {
+            const transaction = await web3.eth.sendTransaction({
+                from: storage.get('connected').wallet,
+                to: receiver,
+                value: web3.utils.toWei(amount, 'ether')
+            });
+            console.log("Transaction successful:", transaction);
+            return transaction;
+        } catch (error) {
+            console.error("Payment error:", error);
+            throw error;
+        }
+    };
 
-    const coinbasePayment = async () => {
-
-    }
-
-    const coinbaseContractCall = async () => {
-
-    }
+    const coinbaseContractCall = async (contractAddress, abi, method, params) => {
+        const web3 = new Web3(coinbaseProvider);
+        const contract = new web3.eth.Contract(abi, contractAddress);
+        try {
+            const data = await contract.methods[method](...params).call();
+            console.log("Contract call successful:", data);
+            return data;
+        } catch (error) {
+            console.error("Contract call error:", error);
+            throw error;
+        }
+    };
 
     const metamaskConnect = async () => {
         const metamaskProvider = await getMetamaskProvider();
@@ -109,21 +137,48 @@ export const createWalletManager = () => {
         }
     };
 
-    const MetamaskDisconnect = () => {
+    const metamaskDisconnect = async () => {
         try {
-            console.log("disconnectWallet runs")
+            const metamaskProvider = await getMetamaskProvider();
+            await metamaskProvider.disconnect();
+            console.log("Disconnected from MetaMask.");
+            storage.set('connected', { connected: false, wallet: null });
         } catch (e) {
-            console.log(e);
+            console.error("Error disconnecting MetaMask:", e);
+            throw e;
         }
-    }
+    };
 
-    const MetamaskPayment = () => {
+    const metamaskPayment = async (amount, receiver) => {
+        const metamaskProvider = await getMetamaskProvider();
+        const web3 = new Web3(metamaskProvider);
+        try {
+            const transaction = await web3.eth.sendTransaction({
+                from: storage.get('connected').wallet,
+                to: receiver,
+                value: web3.utils.toWei(amount, 'ether')
+            });
+            console.log("Transaction successful:", transaction);
+            return transaction;
+        } catch (error) {
+            console.error("Payment error:", error);
+            throw error;
+        }
+    };
 
-    }
-
-    const MetamaskContractCall = () => {
-
-    }
+    const metamaskContractCall = async (contractAddress, abi, method, params) => {
+        const metamaskProvider = await getMetamaskProvider();
+        const web3 = new Web3(metamaskProvider);
+        const contract = new web3.eth.Contract(abi, contractAddress);
+        try {
+            const data = await contract.methods[method](...params).call();
+            console.log("Contract call successful:", data);
+            return data;
+        } catch (error) {
+            console.error("Contract call error:", error);
+            throw error;
+        }
+    };
 
     const getMetamaskAccounts = async () => {
         const metamaskProvider = await getMetamaskProvider();
