@@ -32,8 +32,10 @@ export const createWalletManager = () => {
         if (ethereum) {
             const web3js = new Web3(ethereum)
             await ethereum.enable
-            const accounts = await web3js.eth.getAccounts();
-            return accounts[0]
+            const accounts = await web3js.eth.request({ method: 'eth_requestAccounts' });
+            const account = getMetamaskAccounts(accounts);
+            console.log("User's address : ", account);
+            return account
         }else {
             console.log('Wallet is not installed!');
         }
