@@ -13,8 +13,7 @@ if (typeof process === 'undefined') {
     window.process = process;
 }
 export const createWalletManager = () => {
-    const coinbaseProvider = setupCoinbaseWallet();
-    const web3 = new Web3(coinbaseProvider);
+
 
     const getMetamaskProvider = async () => {
         if (window.ethereum) {
@@ -27,33 +26,21 @@ export const createWalletManager = () => {
         }
     }
 
-    const coinbaseConnect = async () => {
-        try {  
-                const accounts = await web3.eth.getAccounts();
-                if (!accounts || accounts.length === 0) {
-                    throw new Error("wallet address not selected");
-                }
-                console.log(`User's address is ${accounts[0]}`)
-                // ethereum.enable() is now deprecated in 4.0.0
-                // ethereum.enable().then((accounts) => {
-                // console.log(`User's address is using ethereum ${accounts[0]}`)
-                // web3.eth.defaultAccount = accounts[0]
-                // })
-                // const web3 = new Web3(coinbaseProvider);
-                const chainId = await web3.eth.getChainId();
-                console.log("coinbase's chainId : ", chainId);
-
-                // const account = getNormalizeAddress(accounts);
-                // console.log("User's address : ", account);
-                // storage.set('connected', { connected: true, wallet: 'coinbase'});
-                return { account: accounts[0], chainId };
-                
-            } catch (e) {
-            console.log("error while connect", e);
-            throw e;
+    const connectToCoinBase = async () => {
+        try {
+        const { ethereum } = window
+        if (ethereum) {
+            const web3js = new Web3(ethereum)
+            await ethereum.enable
+            const accounts = await web3js.eth.getAccounts();
+            return accounts[0]
+        }else {
+            console.log('Wallet is not installed!');
         }
-    };
-
+        } catch (err) {
+        console.log('Failed connecting to wallet: ', err)
+        }
+    }
     const coinbasePersonalSign = async (message, account) => {
         try {
             const checkSumAddress = Web3.utils.toChecksumAddress(account)
@@ -268,7 +255,7 @@ export const createWalletManager = () => {
     }
 
     return { 
-        coinbaseConnect, 
+        connectToCoinBase, 
         getMetamaskProvider, 
         coinbasePersonalSign, 
         metamaskConnect, 
