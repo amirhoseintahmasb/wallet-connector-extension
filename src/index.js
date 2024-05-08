@@ -27,28 +27,12 @@ export const createWalletManager = () => {
     }
 
     const coinbaseConnect = async () => {
-        try {
-            if (window.coinbaseWalletExtension) {
-                const provider = new CoinbaseWalletSDK({
-                    appName: "My App",
-                    appLogoUrl: "https://example.com/logo.png",
-                    darkMode: false,
-                    overrideIsCoinbaseBrowser: true 
-                }).makeWeb3Provider();
-                console.log("coinbase provider =====> ", provider)
-                await provider.enable();
-                const accounts = await web3.eth.getAccounts();
-                console.log("coinbase accounts =====> ", accounts[0]);
-                const chainId = await web3.eth.getChainId();
-                console.log("coinbase chainId =====> ", chainId);
-               c
-            } else {
-                console.log("coinbase wallet not found");
-                const accounts = await coinbaseProvider.request({ method: 'eth_coinbase' });
+        try {  
+                const accounts = await coinbaseProvider.request({ method: 'eth_requestAccounts' });
                 if (!accounts || accounts.length <= 0) {
                     throw new Error("wallet address not selected");
                 }
-                console.log("User's address : ", accounts);
+                console.log(`User's address is ${accounts[0]}`)
 
                 const web3 = new Web3(coinbaseProvider);
                 const chainId = await web3.eth.getChainId();
@@ -58,9 +42,8 @@ export const createWalletManager = () => {
                 console.log("User's address : ", account);
                 storage.set('connected', { connected: true, wallet: 'coinbase'});
                 return { account, chainId };
-            }
-        }
-            catch (e) {
+                
+            } catch (e) {
             console.log("error while connect", e);
             throw e;
         }
