@@ -87,7 +87,10 @@ export const createWalletManager = () => {
             const transaction = await web3.eth.sendTransaction({
                 from: storage.get('connected').wallet,
                 to: receiver,
-                value: web3.utils.toWei(amount, 'ether')
+                value: web3.utils.toWei(amount, 'ether'),
+                gasLimit: '0x5028',
+                maxPriorityFeePerGas: '0x3b9aca00',
+                maxFeePerGas: '0x2540be400',
             });
             console.log("Transaction successful:", transaction);
             return transaction;
@@ -96,6 +99,27 @@ export const createWalletManager = () => {
             throw error;
         }
     };
+    //      try {
+    //         const hash = await coinbaseProvider.request({
+    //             method: 'eth_sendTransaction',
+    //             params: [
+    //                 {
+    //                     from,
+    //                     to, 
+    //                     value,
+    //                     gasLimit: '0x5028',
+    //                     maxPriorityFeePerGas: '0x3b9aca00',
+    //                     maxFeePerGas: '0x2540be400',
+    //                 }
+    //             ]
+    //         })
+    //         console.log('Hash:', hash);
+    //         return signature
+    //     } catch (error) {
+    //         console.log("error while connect", error);
+    //     }
+
+    // }
 
     const coinbaseContractCall = async (contractAddress, abi, method, params) => {
         const web3 = new Web3(coinbaseProvider);
@@ -157,19 +181,25 @@ export const createWalletManager = () => {
     };
     const metamaskPayment = async (amount, receiver) => {
         const metamaskProvider = await getMetamaskProvider();
-        const web3 = new Web3(metamaskProvider);
         try {
-            const transaction = await web3.eth.sendTransaction({
-                from: storage.get('connected').wallet,
-                to: receiver,
-                value: web3.utils.toWei(amount, 'ether')
-            });
-            console.log("Transaction successful:", transaction);
-            return transaction;
-        } catch (error) {
-            console.error("Payment error:", error);
-            throw error;
-        }
+            const hash = await metamaskProvider.request({
+                method: 'eth_sendTransaction',
+                params: [
+                    {
+                        from,
+                        to, 
+                        value,
+                        gasLimit: '0x5028',
+                        maxPriorityFeePerGas: '0x3b9aca00',
+                        maxFeePerGas: '0x2540be400',
+                    }
+                ]
+            })
+            console.log('Hash:', hash);
+            return signature
+            } catch (error) {
+                console.log("error while connect", error);
+            }
     };
 
     const metamaskContractCall = async (contractAddress, abi, method, params) => {
