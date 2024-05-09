@@ -13,7 +13,16 @@ if (typeof process === 'undefined') {
     window.process = process;
 }
 export const createWalletManager = () => {
-
+    const coinbaseProvider = async () => {
+        if (window.coinbaseWalletExtension) {
+            console.log('found window.ethereum>>');
+            return window.coinbaseWalletExtension;
+        } else {
+            console.log("not found window.ethereum>>")
+            const provider = setupCoinbaseWallet();
+            return provider;
+        }
+    }
 
     const getMetamaskProvider = async () => {
         if (window.ethereum) {
@@ -28,17 +37,26 @@ export const createWalletManager = () => {
 
     const connectToCoinBase = async () => {
         try {
-        const { ethereum } = window
-        if (ethereum) {
-            const web3js = new Web3(ethereum)
-            await ethereum.enable
-            const accounts = await web3js.eth.request({ method: 'eth_requestAccounts' });
-            const account = getMetamaskAccounts(accounts);
+            
+            const accounts = await coinbaseProvider.request({ method: 'eth_requestAccounts' });
+            if (!accounts || accounts.length <= 0) {
+                const web3 = new Web3
+                const accounts = await web3.eth.getCoinbase();
+                if (!accounts || accounts.length <= 0) {
+                    throw new Error("wallet address not selected");
+                }
+                const account = getNormalizeAddress(accounts);
+                console.log("User's address : ", account);
+                return account
+            }
+            let chainId = await coinbaseChainId()
+            console.log("======================================================")
+            console.log(chainId)
+            console.log("======================================================")
+
+            const account = getNormalizeAddress(accounts);
             console.log("User's address : ", account);
-            return account
-        }else {
-            console.log('Wallet is not installed!');
-        }
+            return { account };
         } catch (err) {
         console.log('Failed connecting to wallet: ', err)
         }
